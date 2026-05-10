@@ -58,8 +58,36 @@ document.querySelectorAll('.sec-card').forEach(card => {
     if (!d) return;
     $('prev-card').style.display = '';
     $('prev-val').textContent = `${d.c}/${d.t} (${d.pct}%)`;
+    if (d.wrongIds && d.wrongIds.length > 0) {
+      const btn = $('home-retry-wrong-btn');
+      btn.textContent = `✗ 間違えた ${d.wrongIds.length} 問だけやり直す`;
+      btn.style.display = '';
+    }
   } catch (_) {}
 })();
+
+$('home-retry-wrong-btn').addEventListener('click', () => {
+  try {
+    const d = JSON.parse(localStorage.getItem('tense-score'));
+    if (!d || !d.wrongIds || !d.wrongIds.length) return;
+    const allQ = Object.values(QUIZ_DATA).flat();
+    const wrongQ = allQ.filter(q => d.wrongIds.includes(q.id));
+    if (!wrongQ.length) return;
+
+    state.queue     = wrongQ;
+    state.fullQueue = wrongQ;
+    state.idx       = 0;
+    state.answered  = false;
+    state.wrongIds  = [];
+    state.scores    = {};
+    wrongQ.forEach(item => {
+      if (!state.scores[item.section])
+        state.scores[item.section] = { c: 0, t: 0, name: item.sectionName };
+    });
+    showScreen('screen-quiz');
+    renderQ();
+  } catch (_) {}
+});
 
 /* ── Start ── */
 $('start-btn').addEventListener('click', () => {
@@ -611,7 +639,7 @@ function showResults() {
 
   if (totalT > 0) {
     try {
-      localStorage.setItem('tense-score', JSON.stringify({ c: totalC, t: totalT, pct }));
+      localStorage.setItem('tense-score', JSON.stringify({ c: totalC, t: totalT, pct, wrongIds: state.wrongIds }));
       $('prev-card').style.display = '';
       $('prev-val').textContent = `${totalC}/${totalT} (${pct}%)`;
     } catch (_) {}

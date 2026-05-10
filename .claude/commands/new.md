@@ -3,11 +3,19 @@
 現在のアプリの枠組みをコピーして、新しいGitHubリポジトリに新バージョンを作るスキル。
 データ（問題文・英コミュの文・単語）は空の状態でスタートする。
 
+## 前提
+- `GITHUB_TOKEN` 環境変数が設定されていること（~/.claude/settings.json の env に記載）
+- `git` がインストールされていること
+
 ## 手順
 
 1. `$ARGUMENTS` にリポジトリ名があればそれを使う。なければ「新しいリポジトリ名を教えてください」と聞く。
 
-2. 現在のプロジェクトから以下のファイルを Read ツールで読む：
+2. 現在のプロジェクトのルートを特定する（`git rev-parse --show-toplevel`）。
+
+3. `/tmp/<リポジトリ名>` に作業ディレクトリを作成する。
+
+4. 現在のプロジェクトから以下をコピーする：
    - `index.html`
    - `app.js`
    - `sw.js`
@@ -25,26 +33,42 @@
    - `.claude/commands/eigo.md`
    - `.claude/commands/new.md`
 
-3. `mcp__github__create_repository` で新しいリポジトリ `<リポジトリ名>` を作成する（Public、autoInit: false）。
+5. 以下のファイルは**空のテンプレート**で新規作成する：
 
-4. `mcp__github__push_files` で以下をまとめて1コミットでpushする：
-   - 手順2で読んだファイルをそのままの内容で
-   - `data.js` は以下の空テンプレートで：
-     ```js
-     const QUIZ_DATA = {
-       frames: [],
-       exA: [],
-       exB: [],
-       exC: []
-     };
+   **data.js:**
+   ```js
+   const QUIZ_DATA = {
+     frames: [],
+     exA: [],
+     exB: [],
+     exC: []
+   };
 
-     const EIGO_SENTENCES = [];
-     ```
-   - `vocab/data.js` は以下の空テンプレートで：
-     ```js
-     export const WORDS = [];
-     ```
-   - owner: `ahaaaaa34`、branch: `main`、message: `initial: app template`
+   const EIGO_SENTENCES = [];
+   ```
 
-5. 完了したら新しいリポジトリのURLを報告する。
+   **vocab/data.js:**
+   ```js
+   export const WORDS = [];
+   ```
+
+6. GitHub APIでリポジトリを作成する：
+   ```bash
+   curl -s -X POST https://api.github.com/user/repos \
+     -H "Authorization: token $GITHUB_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"<リポジトリ名>","private":false}'
+   ```
+
+7. git操作でpushする：
+   ```bash
+   cd /tmp/<リポジトリ名>
+   git init
+   git add -A
+   git commit -m "initial: app template"
+   git remote add origin https://$GITHUB_TOKEN@github.com/ahaaaaa34/<リポジトリ名>.git
+   git push -u origin main
+   ```
+
+8. 完了したら `https://github.com/ahaaaaa34/<リポジトリ名>` を報告する。
    次のステップ：新しいリポジトリをCloneしてClaude Codeで開き、/eigo・/grammar・/vocabでデータを追加する。

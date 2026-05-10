@@ -542,13 +542,13 @@ function showFeedback({ isOK, headText, fixText, correctedText, traText, expText
   head.className   = `fb-head ${isOK ? 'ok' : 'ng'}`;
   head.textContent = headText;
 
-  if (fixText)       { fix.textContent = fixText; fix.style.display = ''; }
+  if (fixText)       { fix.textContent = fixText; fix.style.display = 'block'; }
   else                 fix.style.display = 'none';
 
-  if (correctedText) { cor.textContent = '✓ ' + correctedText; cor.style.display = ''; }
+  if (correctedText) { cor.textContent = '✓ ' + correctedText; cor.style.display = 'block'; }
   else                 cor.style.display = 'none';
 
-  if (traText)       { tra.textContent = traText; tra.style.display = ''; }
+  if (traText)       { tra.textContent = traText; tra.style.display = 'block'; }
   else                 tra.style.display = 'none';
 
   exp.textContent = expText;

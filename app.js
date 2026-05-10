@@ -581,6 +581,25 @@ function showFeedback({ isOK, headText, fixText, correctedText, traText, expText
 
   exp.textContent = expText;
   $('next-btn').className = 'next-btn show';
+  saveProgress();
+}
+
+function saveProgress() {
+  try {
+    const totalC = Object.values(state.scores).reduce((s, v) => s + v.c, 0);
+    const totalT = Object.values(state.scores).reduce((s, v) => s + v.t, 0);
+    const pct = totalT ? Math.round(totalC / totalT * 100) : 0;
+    localStorage.setItem('tense-score', JSON.stringify({ c: totalC, t: totalT, pct, wrongIds: state.wrongIds }));
+    $('prev-card').style.display = '';
+    $('prev-val').textContent = `${totalC}/${totalT} (${pct}%)`;
+    const btn = $('home-retry-wrong-btn');
+    if (state.wrongIds.length > 0) {
+      btn.textContent = `✗ 間違えた ${state.wrongIds.length} 問だけやり直す`;
+      btn.style.display = '';
+    } else {
+      btn.style.display = 'none';
+    }
+  } catch (_) {}
 }
 
 /* ── Next ── */
@@ -637,13 +656,6 @@ function showResults() {
     wrongBtn.style.display = 'none';
   }
 
-  if (totalT > 0) {
-    try {
-      localStorage.setItem('tense-score', JSON.stringify({ c: totalC, t: totalT, pct, wrongIds: state.wrongIds }));
-      $('prev-card').style.display = '';
-      $('prev-val').textContent = `${totalC}/${totalT} (${pct}%)`;
-    } catch (_) {}
-  }
 
   showScreen('screen-results');
 }

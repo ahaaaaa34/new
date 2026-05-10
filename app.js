@@ -401,15 +401,18 @@ function renderExCChips() {
   });
 
   poolEl.innerHTML = '';
-  state.excAllWords
-    .filter(({ i }) => !state.excUsed.has(i))
-    .forEach(({ word, i }) => {
-      const btn = document.createElement('button');
-      btn.className   = 'wchip wchip-pool';
-      btn.textContent = word;
+  state.excAllWords.forEach(({ word, i }) => {
+    const btn = document.createElement('button');
+    btn.className   = 'wchip wchip-pool';
+    btn.textContent = word;
+    if (state.excUsed.has(i)) {
+      btn.style.visibility = 'hidden';
+      btn.disabled = true;
+    } else {
       btn.addEventListener('click', () => pickWord(i));
-      poolEl.appendChild(btn);
-    });
+    }
+    poolEl.appendChild(btn);
+  });
 }
 
 /* ── Answer chip factory with long-press drag ── */

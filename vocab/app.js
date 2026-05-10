@@ -58,36 +58,8 @@ document.querySelectorAll('.sec-card').forEach(card => {
     if (!d) return;
     $('prev-card').style.display = '';
     $('prev-val').textContent = `${d.c}/${d.t} (${d.pct}%)`;
-    if (d.wrongIds && d.wrongIds.length > 0) {
-      const btn = $('home-retry-wrong-btn');
-      btn.textContent = `✗ 間違えた ${d.wrongIds.length} 問だけやり直す`;
-      btn.style.display = '';
-    }
   } catch (_) {}
 })();
-
-$('home-retry-wrong-btn').addEventListener('click', () => {
-  try {
-    const d = JSON.parse(localStorage.getItem('tense-score'));
-    if (!d || !d.wrongIds || !d.wrongIds.length) return;
-    const allQ = Object.values(QUIZ_DATA).flat();
-    const wrongQ = allQ.filter(q => d.wrongIds.includes(q.id));
-    if (!wrongQ.length) return;
-
-    state.queue     = wrongQ;
-    state.fullQueue = wrongQ;
-    state.idx       = 0;
-    state.answered  = false;
-    state.wrongIds  = [];
-    state.scores    = {};
-    wrongQ.forEach(item => {
-      if (!state.scores[item.section])
-        state.scores[item.section] = { c: 0, t: 0, name: item.sectionName };
-    });
-    showScreen('screen-quiz');
-    renderQ();
-  } catch (_) {}
-});
 
 /* ── Start ── */
 $('start-btn').addEventListener('click', () => {
@@ -179,7 +151,7 @@ function renderQ() {
 
 /* ── Choice (FRAME / ExA) ── */
 function renderChoiceQ(q) {
-  const html = q.question.replace(/\(\s*\)/g, '<span class="blank">(　　　)</span>');
+  const html = q.question.replace(/(\(\s*\))/g, '<span class="blank">(　　　)</span>');
   $('q-text').innerHTML = html;
 
   const NUMS = ['①', '②', '③', '④'];
@@ -282,14 +254,12 @@ $('exb-check-btn').addEventListener('click', () => {
 
   state.excBNumOK = numOK;
 
-  // Lock number buttons, highlight correct one
   $('q-text').querySelectorAll('.exb-num-btn').forEach(btn => {
     btn.disabled = true;
     if (parseInt(btn.dataset.idx) === correctNum) btn.classList.add('correct-ans');
   });
   $('exb-input').disabled = true;
 
-  // Show number result
   const numResult = $('exb-num-result');
   if (numOK) {
     numResult.textContent = `✓ 番号正解: ${NUMS[state.excBSelected]}`;
@@ -299,7 +269,6 @@ $('exb-check-btn').addEventListener('click', () => {
     numResult.className   = 'exb-num-result ng';
   }
 
-  // Show comparison
   $('exb-typed-val').textContent = $('exb-input').value.trim() || '（未入力）';
   $('exb-correct-val').textContent = correctForm;
 
@@ -386,7 +355,6 @@ function renderExCQ(q) {
   renderExCChips();
 }
 
-/* ── ExC chip rendering ── */
 function renderExCChips() {
   const buildEl = $('build-area');
   const poolEl  = $('pool-area');
@@ -401,21 +369,17 @@ function renderExCChips() {
   });
 
   poolEl.innerHTML = '';
-  state.excAllWords.forEach(({ word, i }) => {
-    const btn = document.createElement('button');
-    btn.className   = 'wchip wchip-pool';
-    btn.textContent = word;
-    if (state.excUsed.has(i)) {
-      btn.style.visibility = 'hidden';
-      btn.disabled = true;
-    } else {
+  state.excAllWords
+    .filter(({ i }) => !state.excUsed.has(i))
+    .forEach(({ word, i }) => {
+      const btn = document.createElement('button');
+      btn.className   = 'wchip wchip-pool';
+      btn.textContent = word;
       btn.addEventListener('click', () => pickWord(i));
-    }
-    poolEl.appendChild(btn);
-  });
+      poolEl.appendChild(btn);
+    });
 }
 
-/* ── Answer chip factory with long-press drag ── */
 function makeAnswerChip(word, wordI, pos) {
   const btn = document.createElement('button');
   btn.className      = 'wchip wchip-ans';
@@ -479,7 +443,6 @@ function makeAnswerChip(word, wordI, pos) {
     const dropY   = e.clientY;
     cleanup();
 
-    // getBoundingClientRect scan avoids pointer-capture hit-testing issues
     const chips = [...document.querySelectorAll('.wchip-ans')];
     let targetChip = null;
 
@@ -492,7 +455,6 @@ function makeAnswerChip(word, wordI, pos) {
       }
     }
 
-    // Fallback: nearest chip center within 80px
     if (!targetChip) {
       let minDist = 80;
       for (const chip of chips) {
@@ -573,36 +535,17 @@ function showFeedback({ isOK, headText, fixText, correctedText, traText, expText
   head.className   = `fb-head ${isOK ? 'ok' : 'ng'}`;
   head.textContent = headText;
 
-  if (fixText)       { fix.textContent = fixText; fix.style.display = 'block'; }
+  if (fixText)       { fix.textContent = fixText; fix.style.display = ''; }
   else                 fix.style.display = 'none';
 
-  if (correctedText) { cor.textContent = '✓ ' + correctedText; cor.style.display = 'block'; }
+  if (correctedText) { cor.textContent = '✓ ' + correctedText; cor.style.display = ''; }
   else                 cor.style.display = 'none';
 
-  if (traText)       { tra.textContent = traText; tra.style.display = 'block'; }
+  if (traText)       { tra.textContent = traText; tra.style.display = ''; }
   else                 tra.style.display = 'none';
 
   exp.textContent = expText;
   $('next-btn').className = 'next-btn show';
-  saveProgress();
-}
-
-function saveProgress() {
-  try {
-    const totalC = Object.values(state.scores).reduce((s, v) => s + v.c, 0);
-    const totalT = Object.values(state.scores).reduce((s, v) => s + v.t, 0);
-    const pct = totalT ? Math.round(totalC / totalT * 100) : 0;
-    localStorage.setItem('tense-score', JSON.stringify({ c: totalC, t: totalT, pct, wrongIds: state.wrongIds }));
-    $('prev-card').style.display = '';
-    $('prev-val').textContent = `${totalC}/${totalT} (${pct}%)`;
-    const btn = $('home-retry-wrong-btn');
-    if (state.wrongIds.length > 0) {
-      btn.textContent = `✗ 間違えた ${state.wrongIds.length} 問だけやり直す`;
-      btn.style.display = '';
-    } else {
-      btn.style.display = 'none';
-    }
-  } catch (_) {}
 }
 
 /* ── Next ── */
@@ -659,61 +602,15 @@ function showResults() {
     wrongBtn.style.display = 'none';
   }
 
+  if (totalT > 0) {
+    try {
+      localStorage.setItem('tense-score', JSON.stringify({ c: totalC, t: totalT, pct }));
+      $('prev-card').style.display = '';
+      $('prev-val').textContent = `${totalC}/${totalT} (${pct}%)`;
+    } catch (_) {}
+  }
 
   showScreen('screen-results');
-}
-
-/* ── Hamburger menu ── */
-function openMenu() { $('menu-overlay').classList.add('show'); }
-function closeMenu() { $('menu-overlay').classList.remove('show'); }
-
-$('hamburger-btn').addEventListener('click', openMenu);
-$('menu-close-area').addEventListener('click', closeMenu);
-
-let currentSubject = 'grammar';
-
-function setMenuActive(subject) {
-  ['menu-grammar', 'menu-eigo', 'menu-vocab'].forEach(id => {
-    $(id).classList.toggle('active', id === 'menu-' + subject);
-  });
-  currentSubject = subject;
-}
-
-$('menu-grammar').addEventListener('click', () => {
-  setMenuActive('grammar');
-  closeMenu();
-  showScreen('screen-home');
-});
-
-$('menu-eigo').addEventListener('click', () => {
-  setMenuActive('eigo');
-  closeMenu();
-  renderEigo();
-  showScreen('screen-eigo');
-});
-
-$('menu-vocab').addEventListener('click', () => {
-  setMenuActive('vocab');
-  closeMenu();
-  window.location.href = 'vocab/index.html';
-});
-
-$('eigo-back').addEventListener('click', () => showScreen('screen-home'));
-
-/* ── Eigo screen ── */
-function renderEigo() {
-  const body = $('eigo-body');
-  if (body.children.length > 0) return;
-  EIGO_SENTENCES.forEach((s, i) => {
-    const card = document.createElement('div');
-    card.className = 'sen-card';
-    card.innerHTML = `
-      <div class="sen-num">${i + 1} / ${EIGO_SENTENCES.length}</div>
-      <div class="sen-en">🇬🇧 ${s.en}</div>
-      <div class="sen-ja">🇯🇵 ${s.ja}</div>
-      <div class="sen-grammar">📘 文法：${s.grammar}</div>`;
-    body.appendChild(card);
-  });
 }
 
 /* ── Service Worker ── */

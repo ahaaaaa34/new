@@ -360,117 +360,14 @@
       margin-bottom: 10px; transition: background .12s;
     }
     .btn-wrong:hover { background: rgba(220,38,38,.15); }
-
-    /* ── Hamburger ── */
-    .home-hero { position: relative; }
-    .hamburger-btn {
-      position: absolute; top: 14px; right: 14px;
-      background: rgba(255,255,255,.2); border: none; border-radius: 9px;
-      padding: 9px 10px; cursor: pointer; display: flex; flex-direction: column; gap: 5px;
-    }
-    .hamburger-btn span { display: block; width: 22px; height: 2px; background: #fff; border-radius: 2px; }
-
-    /* ── Menu overlay ── */
-    .menu-overlay {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,.45); display: none;
-      justify-content: flex-end;
-    }
-    .menu-overlay.show { display: flex; animation: fadeIn .2s ease; }
-    .menu-panel {
-      background: var(--card); width: 260px; min-height: 100vh;
-      padding: 0; display: flex; flex-direction: column;
-      box-shadow: -4px 0 24px rgba(0,0,0,.15);
-      animation: slideIn .2s ease;
-    }
-    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-    .menu-header {
-      background: linear-gradient(135deg, #4F46E5, #7C3AED);
-      padding: 44px 20px 20px; color: #fff;
-    }
-    .menu-header h3 { font-size: 16px; font-weight: 800; }
-    .menu-header p  { font-size: 12px; opacity: .8; margin-top: 3px; }
-    .menu-items { padding: 12px 0; flex: 1; }
-    .menu-item {
-      display: flex; align-items: center; gap: 14px;
-      width: 100%; padding: 14px 20px; background: none; border: none;
-      cursor: pointer; text-align: left; font-family: inherit;
-      transition: background .12s; border-left: 3px solid transparent;
-    }
-    .menu-item:hover { background: var(--pl); }
-    .menu-item.active { border-left-color: var(--p); background: var(--pl); }
-    .menu-icon { font-size: 22px; flex-shrink: 0; }
-    .menu-item-title { font-size: 15px; font-weight: 700; color: var(--tx); }
-    .menu-item-sub   { font-size: 12px; color: var(--mu); margin-top: 1px; }
-    .menu-close-area { flex: 1; }
-
-    /* ── 英コミュ screen ── */
-    .eigo-top {
-      background: var(--card); padding: 10px 16px;
-      display: flex; align-items: center; gap: 12px;
-      border-bottom: 1px solid var(--br);
-      position: sticky; top: 0; z-index: 10;
-    }
-    .eigo-top h2 { font-size: 16px; font-weight: 700; }
-    .eigo-body { max-width: 480px; margin: 0 auto; padding: 16px 16px 48px; }
-    .sen-card {
-      background: var(--card); border-radius: var(--r);
-      padding: 16px 18px; margin-bottom: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,.07);
-      border-left: 3px solid var(--p);
-    }
-    .sen-num { font-size: 11px; font-weight: 700; color: var(--mu); margin-bottom: 8px; }
-    .sen-en { font-size: 15px; font-weight: 600; line-height: 1.7; margin-bottom: 6px; }
-    .sen-ja { font-size: 14px; color: var(--mu); line-height: 1.7; margin-bottom: 8px; }
-    .sen-grammar {
-      font-size: 12px; color: #1E40AF; background: #EFF6FF;
-      border-radius: 7px; padding: 7px 10px; line-height: 1.7;
-    }
-
   </style>
 </head>
 <body>
 
-<!-- ════ MENU OVERLAY ════ -->
-<div class="menu-overlay" id="menu-overlay">
-  <div class="menu-panel">
-    <div class="menu-header">
-      <h3>科目を選択</h3>
-      <p>学習する内容を選んでください</p>
-    </div>
-    <div class="menu-items">
-      <button class="menu-item active" id="menu-grammar">
-        <span class="menu-icon">📚</span>
-        <div>
-          <div class="menu-item-title">文法</div>
-          <div class="menu-item-sub">時制マスター STEP 01</div>
-        </div>
-      </button>
-      <button class="menu-item" id="menu-eigo">
-        <span class="menu-icon">🌏</span>
-        <div>
-          <div class="menu-item-title">英コミュ</div>
-          <div class="menu-item-sub">文章・文法解説</div>
-        </div>
-      </button>
-      <button class="menu-item" id="menu-vocab">
-        <span class="menu-icon">📝</span>
-        <div>
-          <div class="menu-item-title">英コミュの単語</div>
-          <div class="menu-item-sub">単語学習アプリ</div>
-        </div>
-      </button>
-    </div>
-  </div>
-  <div class="menu-close-area" id="menu-close-area"></div>
-</div>
-
 <!-- ════ HOME ════ -->
 <div id="screen-home" class="screen active">
-  <div class="home-hero">
-    <button class="hamburger-btn" id="hamburger-btn" aria-label="メニュー">
-      <span></span><span></span><span></span>
-    </button>
+  <div class="home-hero" style="position:relative">
+    <a href="../index.html" style="position:absolute;top:12px;left:12px;background:rgba(255,255,255,.2);border-radius:8px;padding:7px 12px;color:#fff;font-size:13px;font-weight:600;text-decoration:none;">← 戻る</a>
     <h1>英語時制マスター</h1>
     <p>STEP 01: 時制 (Tense) — 大学入試対策</p>
   </div>
@@ -502,7 +399,6 @@
     </div>
 
     <button class="start-btn" id="start-btn">スタート →</button>
-    <button class="btn-wrong" id="home-retry-wrong-btn" style="display:none"></button>
     <div id="prev-card" class="prev-card" style="display:none">
       <span class="lbl">前回のスコア</span>
       <span class="val" id="prev-val"></span>
@@ -614,20 +510,6 @@
     </div>
   </div>
 </div>
-
-<!-- ════ EIGO ════ -->
-<div id="screen-eigo" class="screen">
-  <div class="eigo-top">
-    <button class="back-btn" id="eigo-back">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <path d="M14 17L8 11L14 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-    <h2>英コミュ</h2>
-  </div>
-  <div class="eigo-body" id="eigo-body"></div>
-</div>
-
 
 <script src="data.js"></script>
 <script src="app.js"></script>

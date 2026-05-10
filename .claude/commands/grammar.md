@@ -4,7 +4,7 @@
 
 ## 手順
 
-1. まず `/home/user/new/data.js` を読んで現在のデータ形式・各セクションの末尾IDを把握する。
+1. まず現在のプロジェクトにある `data.js` を読んで形式・各セクションの末尾IDを把握する。
 
 2. `$ARGUMENTS` に画像パスがあれば Read ツールで読む。なければ「画像のパスを教えてください」と聞く。
 
@@ -12,6 +12,6 @@
 
 4. 手順1で確認した形式・IDの続きで該当セクションの末尾に追加する。
 
-5. `git add /home/user/new/data.js && git commit -m "grammar: add N questions" && git push -u origin claude/create-matching-report-In93g`
+5. `git add data.js && git commit -m "grammar: add questions" && git push`
 
 6. 何問追加したか報告する。

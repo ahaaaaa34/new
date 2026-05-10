@@ -4,7 +4,7 @@
 
 ## 手順
 
-1. まず `/home/user/new/vocab/data.js` を読んで現在の形式・最後のIDを把握する。
+1. まず現在のプロジェクトにある `vocab/data.js` を読んで形式・最後のIDを把握する。
 
 2. `$ARGUMENTS` にデータがあればそれを使う。なければ「単語データを貼り付けてください」と聞く。
 
@@ -18,6 +18,6 @@
 
 4. 手順1で確認した形式・IDの続きで WORDS 配列の末尾に追加する。
 
-5. `git add /home/user/new/vocab/data.js && git commit -m "vocab: add N words" && git push -u origin claude/create-matching-report-In93g`
+5. `git add vocab/data.js && git commit -m "vocab: add words" && git push`
 
 6. 何単語追加したか報告する。

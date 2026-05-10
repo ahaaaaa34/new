@@ -663,6 +663,60 @@ function showResults() {
   showScreen('screen-results');
 }
 
+/* ── Hamburger menu ── */
+function openMenu() { $('menu-overlay').classList.add('show'); }
+function closeMenu() { $('menu-overlay').classList.remove('show'); }
+
+$('hamburger-btn').addEventListener('click', openMenu);
+$('menu-close-area').addEventListener('click', closeMenu);
+
+let currentSubject = 'grammar';
+
+function setMenuActive(subject) {
+  ['menu-grammar', 'menu-eigo', 'menu-vocab'].forEach(id => {
+    $(id).classList.toggle('active', id === 'menu-' + subject);
+  });
+  currentSubject = subject;
+}
+
+$('menu-grammar').addEventListener('click', () => {
+  setMenuActive('grammar');
+  closeMenu();
+  showScreen('screen-home');
+});
+
+$('menu-eigo').addEventListener('click', () => {
+  setMenuActive('eigo');
+  closeMenu();
+  renderEigo();
+  showScreen('screen-eigo');
+});
+
+$('menu-vocab').addEventListener('click', () => {
+  setMenuActive('vocab');
+  closeMenu();
+  showScreen('screen-vocab');
+});
+
+$('eigo-back').addEventListener('click', () => showScreen('screen-home'));
+$('vocab-back').addEventListener('click', () => showScreen('screen-home'));
+
+/* ── Eigo screen ── */
+function renderEigo() {
+  const body = $('eigo-body');
+  if (body.children.length > 0) return;
+  EIGO_SENTENCES.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'sen-card';
+    card.innerHTML = `
+      <div class="sen-num">${i + 1} / ${EIGO_SENTENCES.length}</div>
+      <div class="sen-en">🇬🇧 ${s.en}</div>
+      <div class="sen-ja">🇯🇵 ${s.ja}</div>
+      <div class="sen-grammar">📘 文法：${s.grammar}</div>`;
+    body.appendChild(card);
+  });
+}
+
 /* ── Service Worker ── */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});

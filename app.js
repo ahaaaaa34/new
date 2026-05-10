@@ -522,7 +522,7 @@ $('check-btn').addEventListener('click', () => {
   showFeedback({
     isOK,
     headText:      isOK ? '✓ 正解！' : '✗ 不正解',
-    fixText:       isOK ? null : q.answer,
+    fixText:       q.answer,
     correctedText: null,
     traText:       q.translation ? `[訳] ${q.translation}` : null,
     expText:       q.explanation

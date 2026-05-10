@@ -1,4 +1,4 @@
-const CACHE = 'tense-v1';
+const CACHE = 'tense-v2';
 const ASSETS = ['./', './index.html', './data.js', './app.js', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {

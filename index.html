@@ -363,12 +363,20 @@
 
     /* ── Hamburger ── */
     .home-hero { position: relative; }
+    .res-hero  { position: relative; }
     .hamburger-btn {
       position: absolute; top: 14px; right: 14px;
       background: rgba(255,255,255,.2); border: none; border-radius: 9px;
       padding: 9px 10px; cursor: pointer; display: flex; flex-direction: column; gap: 5px;
     }
     .hamburger-btn span { display: block; width: 22px; height: 2px; background: #fff; border-radius: 2px; }
+    /* inline hamburger for white-bg headers */
+    .hamburger-btn-sm {
+      background: var(--bg); border: none; border-radius: 9px;
+      padding: 7px 8px; cursor: pointer; display: flex; flex-direction: column; gap: 4px;
+      flex-shrink: 0;
+    }
+    .hamburger-btn-sm span { display: block; width: 20px; height: 2px; background: var(--mu); border-radius: 2px; }
 
     /* ── Menu overlay ── */
     .menu-overlay {
@@ -522,6 +530,9 @@
       <div class="prog-txt" id="prog-txt">1 / 43</div>
       <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
     </div>
+    <button class="hamburger-btn-sm" id="hamburger-quiz" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 
   <div class="quiz-body">
@@ -598,6 +609,9 @@
 <!-- ════ RESULTS ════ -->
 <div id="screen-results" class="screen">
   <div class="res-hero">
+    <button class="hamburger-btn" id="hamburger-res" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
     <h2 id="res-h2">クイズ完了！</h2>
     <div class="score-ring">
       <div class="score-big" id="score-big">—</div>
@@ -624,6 +638,9 @@
       </svg>
     </button>
     <h2>英コミュ</h2>
+    <button class="hamburger-btn-sm" id="hamburger-eigo" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
   </div>
   <div class="eigo-body" id="eigo-body"></div>
 </div>

@@ -162,6 +162,24 @@ $('btn-retry').addEventListener('click', () => startSession([...WORDS]));
 
 $('btn-result-home').addEventListener('click', () => showScreen('screen-home'));
 
+// ── Hamburger menu ──
+function openVMenu() { document.getElementById('v-menu-overlay').classList.add('show'); }
+function closeVMenu() { document.getElementById('v-menu-overlay').classList.remove('show'); }
+
+['v-hamburger-home', 'v-hamburger-fc', 'v-hamburger-result'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('click', openVMenu);
+});
+document.getElementById('v-menu-close').addEventListener('click', closeVMenu);
+
+document.getElementById('vmenu-grammar').addEventListener('click', () => {
+  window.location.href = '../index.html';
+});
+document.getElementById('vmenu-eigo').addEventListener('click', () => {
+  window.location.href = '../index.html?screen=eigo';
+});
+document.getElementById('vmenu-vocab').addEventListener('click', closeVMenu);
+
 // ── Init ──
 document.querySelector('.home-count').textContent = `${WORDS.length} WORDS`;
 initTts();

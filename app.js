@@ -667,7 +667,10 @@ function showResults() {
 function openMenu() { $('menu-overlay').classList.add('show'); }
 function closeMenu() { $('menu-overlay').classList.remove('show'); }
 
-$('hamburger-btn').addEventListener('click', openMenu);
+['hamburger-btn', 'hamburger-quiz', 'hamburger-res', 'hamburger-eigo'].forEach(id => {
+  const el = $(id);
+  if (el) el.addEventListener('click', openMenu);
+});
 $('menu-close-area').addEventListener('click', closeMenu);
 
 let currentSubject = 'grammar';
@@ -714,6 +717,15 @@ function renderEigo() {
       <div class="sen-grammar">📘 文法：${s.grammar}</div>`;
     body.appendChild(card);
   });
+}
+
+/* ── Handle deep-link from vocab app ── */
+const _p = new URLSearchParams(location.search).get('screen');
+if (_p === 'eigo') {
+  renderEigo();
+  showScreen('screen-eigo');
+  setMenuActive('eigo');
+  history.replaceState(null, '', location.pathname);
 }
 
 /* ── Service Worker ── */

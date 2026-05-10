@@ -46,6 +46,8 @@ export function speakAndWait(text, lang = 'en') {
   });
 }
 
+// ─── internal ───
+
 const LANG_MAP = { ja: 'ja-JP' };
 
 function _langCode(lang) {
